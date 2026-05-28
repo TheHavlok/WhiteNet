@@ -1,0 +1,44 @@
+module olcrtc-jitsi-dc
+
+go 1.26
+
+require (
+	github.com/google/uuid v1.6.0
+	github.com/pion/interceptor v0.1.45
+	github.com/pion/logging v0.2.4
+	github.com/pion/webrtc/v4 v4.2.13
+	github.com/xjasonlyu/tun2socks/v2 v2.6.0
+	github.com/xtaci/smux v1.5.57
+	github.com/zarazaex69/j v0.0.0-20260523204249-4015c3c4de75
+	golang.org/x/crypto v0.52.0
+	gopkg.in/yaml.v3 v3.0.1
+)
+
+require (
+	github.com/coder/websocket v1.8.14 // indirect
+	github.com/google/btree v1.1.3 // indirect
+	github.com/pion/datachannel v1.6.0 // indirect
+	github.com/pion/dtls/v3 v3.1.2 // indirect
+	github.com/pion/ice/v4 v4.2.5 // indirect
+	github.com/pion/mdns/v2 v2.1.0 // indirect
+	github.com/pion/randutil v0.1.0 // indirect
+	github.com/pion/rtcp v1.2.16 // indirect
+	github.com/pion/rtp v1.10.2 // indirect
+	github.com/pion/sctp v1.10.0 // indirect
+	github.com/pion/sdp/v3 v3.0.18 // indirect
+	github.com/pion/srtp/v3 v3.0.10 // indirect
+	github.com/pion/stun/v3 v3.1.2 // indirect
+	github.com/pion/transport/v4 v4.0.1 // indirect
+	github.com/pion/turn/v5 v5.0.4 // indirect
+	github.com/wlynxg/anet v0.0.5 // indirect
+	golang.org/x/exp/shiny v0.0.0-20260410095643-746e56fc9e2f // indirect
+	golang.org/x/image v0.40.0 // indirect
+	golang.org/x/mobile v0.0.0-20260520154334-0e4426e1883d // indirect
+	golang.org/x/mod v0.36.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sync v0.20.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
+	golang.org/x/time v0.14.0 // indirect
+	golang.org/x/tools v0.45.0 // indirect
+	gvisor.dev/gvisor v0.0.0-20250523182742-eede7a881b20 // indirect
+)

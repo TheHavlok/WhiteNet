@@ -1,0 +1,43 @@
+# Серверный конфиг: jitsi + datachannel
+# Сборка: go build -o server.exe ./main/server/
+# Запуск: .\server.exe main\server\config.yaml
+
+mode: srv
+
+auth:
+  provider: jitsi
+
+# Для jitsi: базовый URL сервера
+# Должен совпадать с клиентом. Реальная комната будет вычисляться из этого URL + код пользователя + TOTP.
+room:
+  id: "https://meet.cryptopro.ru"
+
+# Список кодов пользователей. Для каждого кода сервер запустит отдельный обработчик.
+users:
+  - code: "testtest"
+  - code: "vnqtmovqbesfgbm1436"
+
+crypto:
+  # 32 байта в hex (64 символа). Сгенерировать: openssl rand -hex 32
+  # Можно использовать key_file: "./olcrtc.key", чтобы не хранить секрет прямо здесь.
+  key: "489fef04e13b807dab408b3164e97582d244b8fd643814f6b6ddeec3e891c4c7" # должен совпадать с клиентом
+
+net:
+  transport: datachannel
+  dns: "8.8.8.8:53"
+
+liveness:
+  interval: 10s
+  timeout: 5s
+  failures: 3
+
+# Outbound SOCKS5 proxy (опционально, для выхода в интернет через прокси).
+socks:
+  proxy_addr: "" # например "127.0.0.1"
+  proxy_port: 0  # например 1080
+  proxy_user: "" # auth для upstream-прокси (RFC 1929)
+  proxy_pass: ""
+
+# Каталог с файлами names/surnames (относительно бинарника).
+data: data
+debug: false

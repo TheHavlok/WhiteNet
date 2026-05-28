@@ -1,0 +1,37 @@
+# Клиентский конфиг: jitsi + datachannel
+# Сборка: go build -o client.exe ./main/client/
+# Запуск: .\client.exe main\client\config.yaml
+
+mode: cnc
+
+auth:
+  provider: jitsi
+
+# Для jitsi: полный URL комнаты (Базовый сервер + Ваш код).
+# Например, если сервер https://meet.cryptopro.ru и ваш код testtest
+room:
+  id: "https://meet.cryptopro.ru/testtest"
+
+crypto:
+  # Можно использовать key_file: "./olcrtc.key", чтобы не хранить секрет прямо здесь.
+  key: "489fef04e13b807dab408b3164e97582d244b8fd643814f6b6ddeec3e891c4c7" # должен совпадать с сервером
+
+net:
+  transport: datachannel
+  dns: "8.8.8.8:53"
+
+liveness:
+  interval: 10s
+  timeout: 5s
+  failures: 3
+
+# Локальный SOCKS5 прокси — сюда подключаются приложения (браузер, curl и т.д.).
+socks:
+  host: "127.0.0.1"
+  port: 8808
+  user: "" # опционально: входящая auth для SOCKS5 листенера
+  pass: ""
+
+# Каталог с файлами names/surnames (относительно бинарника).
+data: data
+debug: false
