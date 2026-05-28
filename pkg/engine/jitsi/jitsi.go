@@ -293,7 +293,7 @@ func (s *Session) Connect(ctx context.Context) error {
 }
 
 func generateTOTPRoom(baseRoom string) string {
-	window := 5 * time.Minute
+	window := 1 * time.Minute
 	epoch := uint64(time.Now().Unix() / int64(window.Seconds()))
 	buf := make([]byte, 8)
 	binary.BigEndian.PutUint64(buf, epoch)

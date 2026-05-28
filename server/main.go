@@ -110,28 +110,39 @@ func run() error {
 			}
 			go func(code, roomURL string) {
 				logger.Infof("starting server for user code: %s", code)
-				err := server.Run(ctx, server.Config{
-					Transport:      "datachannel",
-					Carrier:        cfg.Auth.Provider,
-					RoomURL:        roomURL,
-					ChannelID:      cfg.Room.Channel,
-					KeyHex:         cfg.Crypto.Key,
-					DNSServer:      cfg.Net.DNS,
-					SOCKSProxyAddr: cfg.SOCKS.ProxyAddr,
-					SOCKSProxyPort: cfg.SOCKS.ProxyPort,
-					SOCKSProxyUser: cfg.SOCKS.ProxyUser,
-					SOCKSProxyPass: cfg.SOCKS.ProxyPass,
-					OnSessionOpen: func(sessionID, deviceID string, claims map[string]any) {
-						logger.Infof("[user:%s] session opened: id=%s device=%s claims=%v", code, sessionID, deviceID, claims)
-					},
-					OnSessionClose: func(sessionID, reason string) {
-						logger.Infof("[user:%s] session closed: id=%s reason=%s", code, sessionID, reason)
-					},
-					OnTraffic: func(sessionID, addr string, bytesIn, bytesOut uint64) {
-						logger.Infof("[user:%s] traffic: session=%s addr=%s in=%d out=%d", code, sessionID, addr, bytesIn, bytesOut)
-					},
-				})
-				errCh <- err
+				for {
+					if ctx.Err() != nil {
+						break
+					}
+					err := server.Run(ctx, server.Config{
+						Transport:      "datachannel",
+						Carrier:        cfg.Auth.Provider,
+						RoomURL:        roomURL,
+						ChannelID:      cfg.Room.Channel,
+						KeyHex:         cfg.Crypto.Key,
+						DNSServer:      cfg.Net.DNS,
+						SOCKSProxyAddr: cfg.SOCKS.ProxyAddr,
+						SOCKSProxyPort: cfg.SOCKS.ProxyPort,
+						SOCKSProxyUser: cfg.SOCKS.ProxyUser,
+						SOCKSProxyPass: cfg.SOCKS.ProxyPass,
+						OnSessionOpen: func(sessionID, deviceID string, claims map[string]any) {
+							logger.Infof("[user:%s] session opened: id=%s device=%s claims=%v", code, sessionID, deviceID, claims)
+						},
+						OnSessionClose: func(sessionID, reason string) {
+							logger.Infof("[user:%s] session closed: id=%s reason=%s", code, sessionID, reason)
+						},
+						OnTraffic: func(sessionID, addr string, bytesIn, bytesOut uint64) {
+							logger.Infof("[user:%s] traffic: session=%s addr=%s in=%d out=%d", code, sessionID, addr, bytesIn, bytesOut)
+						},
+					})
+					if err != nil && ctx.Err() == nil {
+						logger.Warnf("[user:%s] server loop failed: %v. retrying in 5s...", code, err)
+						time.Sleep(5 * time.Second)
+						continue
+					}
+					break
+				}
+				errCh <- nil
 			}(user.Code, userRoomURL)
 		}
 		
