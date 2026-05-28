@@ -13,7 +13,6 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"strings"
 	"syscall"
 	"time"
 
@@ -41,9 +40,6 @@ type yamlConfig struct {
 		ID      string `yaml:"id"`
 		Channel string `yaml:"channel"`
 	} `yaml:"room"`
-	Users []struct {
-		Code string `yaml:"code"`
-	} `yaml:"users"`
 	Crypto struct {
 		Key string `yaml:"key"`
 	} `yaml:"crypto"`
@@ -97,62 +93,27 @@ func run() error {
 	}
 
 	return runManaged(func(ctx context.Context) error {
-		if len(cfg.Users) == 0 {
-			// Fallback for single user mode if no users array provided
-			cfg.Users = append(cfg.Users, struct{ Code string `yaml:"code"` }{Code: ""})
-		}
-		
-		errCh := make(chan error, len(cfg.Users))
-		for _, user := range cfg.Users {
-			userRoomURL := cfg.Room.ID
-			if user.Code != "" {
-				userRoomURL = strings.TrimRight(cfg.Room.ID, "/") + "/" + user.Code
-			}
-			go func(code, roomURL string) {
-				logger.Infof("starting server for user code: %s", code)
-				for {
-					if ctx.Err() != nil {
-						break
-					}
-					err := server.Run(ctx, server.Config{
-						Transport:      "datachannel",
-						Carrier:        cfg.Auth.Provider,
-						RoomURL:        roomURL,
-						ChannelID:      cfg.Room.Channel,
-						KeyHex:         cfg.Crypto.Key,
-						DNSServer:      cfg.Net.DNS,
-						SOCKSProxyAddr: cfg.SOCKS.ProxyAddr,
-						SOCKSProxyPort: cfg.SOCKS.ProxyPort,
-						SOCKSProxyUser: cfg.SOCKS.ProxyUser,
-						SOCKSProxyPass: cfg.SOCKS.ProxyPass,
-						OnSessionOpen: func(sessionID, deviceID string, claims map[string]any) {
-							logger.Infof("[user:%s] session opened: id=%s device=%s claims=%v", code, sessionID, deviceID, claims)
-						},
-						OnSessionClose: func(sessionID, reason string) {
-							logger.Infof("[user:%s] session closed: id=%s reason=%s", code, sessionID, reason)
-						},
-						OnTraffic: func(sessionID, addr string, bytesIn, bytesOut uint64) {
-							logger.Infof("[user:%s] traffic: session=%s addr=%s in=%d out=%d", code, sessionID, addr, bytesIn, bytesOut)
-						},
-					})
-					if err != nil && ctx.Err() == nil {
-						logger.Warnf("[user:%s] server loop failed: %v. retrying in 5s...", code, err)
-						time.Sleep(5 * time.Second)
-						continue
-					}
-					break
-				}
-				errCh <- nil
-			}(user.Code, userRoomURL)
-		}
-		
-		// If any server fails, return its error
-		for range cfg.Users {
-			if err := <-errCh; err != nil {
-				return err
-			}
-		}
-		return nil
+		return server.Run(ctx, server.Config{
+			Transport:      "datachannel",
+			Carrier:        cfg.Auth.Provider,
+			RoomURL:        cfg.Room.ID,
+			ChannelID:      cfg.Room.Channel,
+			KeyHex:         cfg.Crypto.Key,
+			DNSServer:      cfg.Net.DNS,
+			SOCKSProxyAddr: cfg.SOCKS.ProxyAddr,
+			SOCKSProxyPort: cfg.SOCKS.ProxyPort,
+			SOCKSProxyUser: cfg.SOCKS.ProxyUser,
+			SOCKSProxyPass: cfg.SOCKS.ProxyPass,
+			OnSessionOpen: func(sessionID, deviceID string, claims map[string]any) {
+				logger.Infof("session opened: id=%s device=%s claims=%v", sessionID, deviceID, claims)
+			},
+			OnSessionClose: func(sessionID, reason string) {
+				logger.Infof("session closed: id=%s reason=%s", sessionID, reason)
+			},
+			OnTraffic: func(sessionID, addr string, bytesIn, bytesOut uint64) {
+				logger.Infof("traffic: session=%s addr=%s in=%d out=%d", sessionID, addr, bytesIn, bytesOut)
+			},
+		})
 	})
 }
 

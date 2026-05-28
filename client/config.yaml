@@ -7,10 +7,10 @@ mode: cnc
 auth:
   provider: jitsi
 
-# Для jitsi: полный URL комнаты (Базовый сервер + Ваш код).
-# Например, если сервер https://meet.cryptopro.ru и ваш код testtest
+# Для jitsi: полный URL комнаты (https://host/room или host/room).
+# Должен совпадать с сервером.
 room:
-  id: "https://meet.cryptopro.ru/testtest"
+  id: "https://meet.cryptopro.ru/sakjaboyuwbnnqaj"
 
 crypto:
   # Можно использовать key_file: "./olcrtc.key", чтобы не хранить секрет прямо здесь.

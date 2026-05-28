@@ -18,12 +18,9 @@ package jitsi
 import (
 	"bytes"
 	"context"
-	"crypto/hmac"
 	"crypto/rand"
-	"crypto/sha256"
 	"encoding/base64"
 	"encoding/binary"
-	"encoding/hex"
 	"encoding/xml"
 	"errors"
 	"fmt"
@@ -292,22 +289,11 @@ func (s *Session) Connect(ctx context.Context) error {
 	return nil
 }
 
-func generateTOTPRoom(baseRoom string) string {
-	window := 1 * time.Minute
-	epoch := uint64(time.Now().Unix() / int64(window.Seconds()))
-	buf := make([]byte, 8)
-	binary.BigEndian.PutUint64(buf, epoch)
-	mac := hmac.New(sha256.New, []byte(baseRoom))
-	mac.Write(buf)
-	return baseRoom + "-" + hex.EncodeToString(mac.Sum(nil))[:8]
-}
-
 func (s *Session) joinAndOpenBridge(ctx context.Context) (*j.Session, error) {
-	activeRoom := generateTOTPRoom(s.room)
-	logger.Infof("jitsi: joining %s/%s (base: %s) as %s …", s.host, activeRoom, s.room, s.name)
+	logger.Infof("jitsi: joining %s/%s as %s …", s.host, s.room, s.name)
 	jSess, err := j.Join(ctx, j.Config{
 		Host:  s.host,
-		Room:  activeRoom,
+		Room:  s.room,
 		Nick:  s.name,
 		Debug: logger.IsVerbose(),
 	})

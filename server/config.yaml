@@ -7,15 +7,10 @@ mode: srv
 auth:
   provider: jitsi
 
-# Для jitsi: базовый URL сервера
-# Должен совпадать с клиентом. Реальная комната будет вычисляться из этого URL + код пользователя + TOTP.
+# Для jitsi: полный URL комнаты (https://host/room или host/room).
+# Должен совпадать с клиентом.
 room:
-  id: "https://meet.cryptopro.ru"
-
-# Список кодов пользователей. Для каждого кода сервер запустит отдельный обработчик.
-users:
-  - code: "testtest"
-  - code: "vnqtmovqbesfgbm1436"
+  id: "https://meet.cryptopro.ru/sakjaboyuwbnnqaj"
 
 crypto:
   # 32 байта в hex (64 символа). Сгенерировать: openssl rand -hex 32
