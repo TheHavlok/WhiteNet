@@ -10,7 +10,7 @@ auth:
 # Для jitsi: полный URL комнаты (https://host/room или host/room).
 # Должен совпадать с клиентом.
 room:
-  id: "https://meet.cryptopro.ru/sakjaboyuwbnnqaj"
+  id: "https://meet.cryptopro.ru/savhbvreyufeqv3532"
 
 crypto:
   # 32 байта в hex (64 символа). Сгенерировать: openssl rand -hex 32

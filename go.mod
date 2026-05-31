@@ -31,10 +31,16 @@ require (
 	github.com/pion/transport/v4 v4.0.1 // indirect
 	github.com/pion/turn/v5 v5.0.4 // indirect
 	github.com/wlynxg/anet v0.0.5 // indirect
+	golang.org/x/mobile v0.0.0-20260529142300-ecb4cd65260a // indirect
+	golang.org/x/mod v0.36.0 // indirect
 	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
+	golang.org/x/tools v0.45.0 // indirect
 	gvisor.dev/gvisor v0.0.0-20250523182742-eede7a881b20 // indirect
 )
 
 replace github.com/zarazaex69/j => ./j
+
+tool golang.org/x/mobile/cmd/gobind
