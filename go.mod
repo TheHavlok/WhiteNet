@@ -41,6 +41,4 @@ require (
 	gvisor.dev/gvisor v0.0.0-20250523182742-eede7a881b20 // indirect
 )
 
-replace github.com/zarazaex69/j => ./j
-
 tool golang.org/x/mobile/cmd/gobind
